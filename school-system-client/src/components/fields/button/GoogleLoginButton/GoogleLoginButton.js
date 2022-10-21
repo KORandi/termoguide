@@ -1,10 +1,11 @@
 import { useCallback } from "react";
-import GoogleLogin from "react-google-login";
+import { GoogleLogin } from "@react-oauth/google";
 import { loginGoogle } from "../../../../utils/api";
 
 export const GoogleLoginButton = ({ onResponse, onClick, onFailure }) => {
   const responseGoogle = useCallback(
     async (payload) => {
+      console.log(payload);
       const {
         tokenId,
         profileObj: { email },
@@ -22,6 +23,7 @@ export const GoogleLoginButton = ({ onResponse, onClick, onFailure }) => {
 
   const failedGoogle = useCallback(
     (error) => {
+      console.log(error);
       onFailure(error);
     },
     [onFailure]
@@ -29,12 +31,10 @@ export const GoogleLoginButton = ({ onResponse, onClick, onFailure }) => {
 
   return (
     <GoogleLogin
-      clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
       buttonText="Sign in"
       onSuccess={responseGoogle}
-      onFailure={failedGoogle}
-      cookiePolicy={"single_host_origin"}
+      onError={failedGoogle}
+      useOneTap
     />
   );
 };
-

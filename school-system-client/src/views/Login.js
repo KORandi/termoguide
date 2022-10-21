@@ -122,17 +122,6 @@ export const Login = () => {
           >
             log in
           </Button>
-          <div
-            style={{
-              margin: "15px 0",
-            }}
-          >
-            <Button.GoogleLogin
-              onClick={() => setIsLoaded(false)}
-              onResponse={loginHandler}
-              onFailure={errorHandler}
-            />
-          </div>
         </div>
       </form>
     </>
