@@ -9,6 +9,7 @@ import {
   updateUserPassword,
   fetchGateways,
   createGateway,
+  deleteGateway,
 } from "../utils/api";
 import useSWR from "swr";
 
@@ -20,6 +21,7 @@ const contentMap = {
 
 const deleteContentMap = {
   user: deleteUser,
+  gateway: deleteGateway,
 };
 
 const editContentMap = {
@@ -48,45 +50,25 @@ export const useContent = (contentName, id) => {
 };
 
 export const useDeleteContent = (contentName, id) => {
-  const { dispatch, setError, setSuccess } = useApp();
+  const { setError, setSuccess } = useApp();
 
   const remove = useCallback(async () => {
     if (!window.confirm("Are you sure you want to delete this item?")) {
       return false;
     }
-    dispatch({
-      type: "loading",
-      target: contentName,
-    });
+
     try {
       if (!deleteContentMap[contentName]) {
         throw new Error();
       }
-      const content = await deleteContentMap[contentName]?.({ id });
-      dispatch({
-        type: "finished",
-        target: contentName,
-        payload: {
-          data: content,
-          id,
-        },
-      });
+      await deleteContentMap[contentName]?.({ id });
       setSuccess(`Record has been deleted`);
       return true;
     } catch (error) {
-      dispatch({
-        type: "failed",
-        target: contentName,
-        payload: {
-          message: error?.message || "Unable to remove a record",
-          code: error.status,
-          id,
-        },
-      });
       setError(error?.message || "Unable to remove a record");
       return false;
     }
-  }, [contentName, dispatch, id, setError, setSuccess]);
+  }, [contentName, id, setError, setSuccess]);
 
   return remove;
 };

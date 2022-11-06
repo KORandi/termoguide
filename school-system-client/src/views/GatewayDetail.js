@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Layout } from "../containers/Layout";
 import {
   LineChart,
@@ -10,10 +10,27 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { ControlPanel } from "../components/control-panel/ControlPanel";
 import { ADMIN } from "../config/roles";
-import styled from "styled-components";
-import { Grid, Button, Box } from "@mui/material";
+import {
+  Grid,
+  Button,
+  Box,
+  TableContainer,
+  Paper,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  TextField,
+} from "@mui/material";
+import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { useState } from "react";
+import dayjs from "dayjs";
+import { useCallback } from "react";
+import { useDeleteContent } from "../hooks/useContent";
 
 const data = [
   {
@@ -60,12 +77,30 @@ const data = [
   },
 ];
 
-const GraphWrapper = styled.div`
-  height: 500px;
-`;
+function createData(name, value) {
+  return { name, value };
+}
+
+const rows = [
+  createData("Avg temperature", 16.5),
+  createData("Max temperature", 32),
+  createData("Min temperature", 10),
+  createData("Avg humidity", 50),
+  createData("Max humidity", 70),
+  createData("Min humidity", 10),
+];
 
 export const GatewayDetail = () => {
+  const [value, setValue] = useState(dayjs("2022-04-07"));
   const { id } = useParams();
+
+  const remove = useDeleteContent("gateway", id);
+  const navigate = useNavigate();
+
+  const deleteGateway = useCallback(async () => {
+    if (!(await remove())) return;
+    navigate("/app/gateways");
+  }, [navigate, remove]);
 
   return (
     <Layout active="gateways">
@@ -74,11 +109,23 @@ export const GatewayDetail = () => {
         id={id}
         page={"gateway"}
         rolesDelete={[ADMIN]}
-        onDelete={() => {}}
+        onDelete={deleteGateway}
         rolesEdit={[ADMIN]}
       />
       <Grid container>
-        <Grid xs={12}>
+        <Grid item xs={12}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DateTimePicker
+              renderInput={(props) => <TextField {...props} />}
+              label="Select date and time"
+              value={value}
+              onChange={(newValue) => {
+                setValue(newValue);
+              }}
+            />
+          </LocalizationProvider>
+        </Grid>
+        <Grid item xs={12}>
           <Box
             pt={"1rem"}
             pb={"3rem"}
@@ -108,7 +155,38 @@ export const GatewayDetail = () => {
             </Button>
           </Box>
         </Grid>
-        <Grid xs={12} height={500}>
+        <Grid item xs={12}>
+          <h3>Table data</h3>
+        </Grid>
+        <Grid item xs={12} height={500}>
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Name</TableCell>
+                  <TableCell align="right">Value</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.map((row) => (
+                  <TableRow
+                    key={row.name}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="row">
+                      {row.name}
+                    </TableCell>
+                    <TableCell align="right">{row.value}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Grid>
+        <Grid item xs={12}>
+          <h3>Humidity</h3>
+        </Grid>
+        <Grid item xs={12} height={500}>
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
               width={500}
@@ -132,6 +210,30 @@ export const GatewayDetail = () => {
                 stroke="#8884d8"
                 activeDot={{ r: 8 }}
               />
+            </LineChart>
+          </ResponsiveContainer>
+        </Grid>
+        <Grid item xs={12}>
+          <h3>Temperature</h3>
+        </Grid>
+        <Grid item xs={12} height={500}>
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart
+              width={500}
+              height={300}
+              data={data}
+              margin={{
+                top: 5,
+                right: 30,
+                left: 20,
+                bottom: 5,
+              }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
               <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
             </LineChart>
           </ResponsiveContainer>

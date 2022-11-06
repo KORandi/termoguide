@@ -145,6 +145,13 @@ export const deleteUser = async (body) => {
   });
 };
 
+export const deleteGateway = async (body) => {
+  return await fetchJSON(`${url}/api/gateway/delete`, {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+};
+
 export const updateSubject = async (body) => {
   return await fetchJSON(`${url}/api/subject/update`, {
     method: "POST",
