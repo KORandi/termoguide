@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Status } from "../../components/status/Status";
 
 export const subjectColumns = [
   {
@@ -12,5 +13,6 @@ export const subjectColumns = [
   {
     field: "status",
     headerName: "Status",
+    renderCell: ({ row: { id } }) => <Status id={id} />,
   },
 ];

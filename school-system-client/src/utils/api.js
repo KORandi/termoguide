@@ -86,6 +86,10 @@ export const fetchGateways = async () => {
   return await fetchJSON(`${url}/api/gateway/list`);
 };
 
+export const fetchGatewayStatus = async (id) => {
+  return await fetchJSON(`${url}/api/gateway/status/${id}`);
+};
+
 export const fetchStudentEnum = async () => {
   return await fetchJSON(`${url}/api/user/enum/students`);
 };

@@ -3,6 +3,7 @@ import {
   validate,
   validateGatewayMac,
   validateGatewayPayload,
+  validateStatus,
 } from "../../abl/gateway";
 import { GatewayDAO } from "../../dao/gateway.dao";
 import { logRequest } from "../../middlewares/logRequest";
@@ -11,7 +12,7 @@ import { authenticate, availableFor } from "../../utils";
 
 const router = Router();
 
-// create user
+// create gateway
 router.post(
   "/create",
   authenticate(),
@@ -47,7 +48,32 @@ router.post("/add", logRequest, async (req, res) => {
   });
 });
 
-// list all users
+router.get("/status/:id", async function (req, res) {
+  const { id } = req.params;
+
+  const errors = validate([validateStatus(id)]);
+
+  if (errors.length) {
+    res.status(400);
+    res.json({
+      status: 400,
+      errors,
+      data: req.body,
+    });
+    return;
+  }
+
+  const temperature = await GatewayDAO.getLastTemperatureRecord(id);
+
+  res.json({
+    status: 200,
+    data: {
+      value: !!temperature,
+    },
+  });
+});
+
+// list all gateways
 router.get(
   "/list",
   authenticate(),
@@ -57,7 +83,7 @@ router.get(
   }
 );
 
-// get user by id
+// get gateway by id
 router.get(
   "/:id",
   authenticate(),
@@ -67,7 +93,7 @@ router.get(
   }
 );
 
-// update user
+// update gateway
 router.post(
   "/update",
   authenticate(),

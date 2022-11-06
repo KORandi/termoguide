@@ -1,6 +1,6 @@
 import { Add } from "@mui/icons-material";
 import { Box, Button } from "@mui/material";
-import React, { useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { Table } from "../components/table";
 import { subjectColumns } from "../config/columns/subjects";
