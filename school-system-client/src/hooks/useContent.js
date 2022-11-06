@@ -11,6 +11,8 @@ import {
   createGateway,
   deleteGateway,
   fetchGatewayStatus,
+  fetchGatewayTemperature,
+  fetchGatewayHumidity,
 } from "../utils/api";
 import useSWR from "swr";
 
@@ -19,6 +21,8 @@ const contentMap = {
   user: fetchUser,
   gateways: fetchGateways,
   gatewayStatus: fetchGatewayStatus,
+  gatewayTemperature: fetchGatewayTemperature,
+  gatewayHumidity: fetchGatewayHumidity,
 };
 
 const deleteContentMap = {

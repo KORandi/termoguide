@@ -30,7 +30,7 @@ import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { useState } from "react";
 import dayjs from "dayjs";
 import { useCallback } from "react";
-import { useDeleteContent } from "../hooks/useContent";
+import { useContent, useDeleteContent } from "../hooks/useContent";
 
 const data = [
   {
@@ -93,6 +93,8 @@ const rows = [
 export const GatewayDetail = () => {
   const [value, setValue] = useState(dayjs("2022-04-07"));
   const { id } = useParams();
+  const { data: temperature } = useContent("gatewayTemperature", id);
+  const { data: humidity } = useContent("gatewayHumidity", id);
 
   const remove = useDeleteContent("gateway", id);
   const navigate = useNavigate();
@@ -237,6 +239,18 @@ export const GatewayDetail = () => {
               <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
             </LineChart>
           </ResponsiveContainer>
+        </Grid>
+        <Grid item xs={12}>
+          <h4>Testovaci data - response</h4>
+          <h5>Teplota</h5>
+          <Box>
+            {temperature &&
+              JSON.stringify(temperature.data.temperatures.slice(0, 7))}
+          </Box>
+          <h5>Vlhkost</h5>
+          <Box>
+            {humidity && JSON.stringify(humidity.data.humidities.slice(0, 7))}
+          </Box>
         </Grid>
       </Grid>
     </Layout>

@@ -33,7 +33,7 @@ export function validateGatewayPayload(payload) {
   });
 }
 
-export function validateStatus(id) {
+export function validateId(id) {
   if (typeof id !== "string") {
     return "param 'id' is not string";
   }
