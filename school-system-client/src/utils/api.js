@@ -90,8 +90,10 @@ export const fetchGatewayStatus = async (id) => {
   return await fetchJSON(`${url}/api/gateway/status/${id}`);
 };
 
-export const fetchGatewayTemperature = async (id) => {
-  return await fetchJSON(`${url}/api/gateway/temperature/${id}`);
+export const fetchGatewayTemperature = async ({ date, interval }) => {
+  return await fetchJSON(
+    `${url}/api/gateway/temperature/${date.unix() * 1000}/${interval}`
+  );
 };
 
 export const fetchGatewayHumidity = async (id) => {

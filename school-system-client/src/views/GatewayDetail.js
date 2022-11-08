@@ -15,7 +15,6 @@ import { ControlPanel } from "../components/control-panel/ControlPanel";
 import { ADMIN } from "../config/roles";
 import {
   Grid,
-  Button,
   Box,
   TableContainer,
   Paper,
@@ -25,12 +24,21 @@ import {
   TableCell,
   TableBody,
   TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
-import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { useState } from "react";
+import {
+  LocalizationProvider,
+  MobileDatePicker,
+  TimePicker,
+} from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useCallback } from "react";
 import { useContent, useDeleteContent } from "../hooks/useContent";
+import { useReducer } from "react";
+import { useMemo } from "react";
 
 const data = [
   {
@@ -91,9 +99,15 @@ const rows = [
 ];
 
 export const GatewayDetail = () => {
-  const [value, setValue] = useState(dayjs("2022-04-07"));
+  const [state, setState] = useReducer(
+    (prevState, currState) => ({ ...prevState, ...currState }),
+    {
+      date: dayjs().subtract(10, "minute"),
+      interval: 60 * 1000,
+    }
+  );
   const { id } = useParams();
-  const { data: temperature } = useContent("gatewayTemperature", id);
+  const { data: temperature } = useContent("gatewayTemperature", state);
   const { data: humidity } = useContent("gatewayHumidity", id);
 
   const remove = useDeleteContent("gateway", id);
@@ -103,6 +117,14 @@ export const GatewayDetail = () => {
     if (!(await remove())) return;
     navigate("/app/gateways");
   }, [navigate, remove]);
+
+  const graphTemperature = useMemo(() => {
+    return temperature?.data.map((temp) => ({
+      temperature: temp.temperatureAvg,
+      time: dayjs(temp.date).format("HH:mm:ss"),
+      date: dayjs(temp.date).format("DD.MM.YYYY"),
+    }));
+  }, [temperature]);
 
   return (
     <Layout active="gateways">
@@ -116,45 +138,52 @@ export const GatewayDetail = () => {
       />
       <Grid container>
         <Grid item xs={12}>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DateTimePicker
-              renderInput={(props) => <TextField {...props} />}
-              label="Select date and time"
-              value={value}
-              onChange={(newValue) => {
-                setValue(newValue);
-              }}
-            />
-          </LocalizationProvider>
-        </Grid>
-        <Grid item xs={12}>
-          <Box
-            pt={"1rem"}
-            pb={"3rem"}
-            display="flex"
-            justifyContent={"space-evenly"}
-          >
-            <Button type="submit" variant="contained">
-              1 Minute
-            </Button>
-            <Button type="submit" variant="contained">
-              5 Minutes
-            </Button>
-            <Button type="submit" variant="contained">
-              10 Minutes
-            </Button>
-            <Button type="submit" variant="contained">
-              1 Hour
-            </Button>
-            <Button type="submit" variant="contained">
-              1 Day
-            </Button>
-            <Button type="submit" variant="contained">
-              1 Week
-            </Button>
-            <Button type="submit" variant="contained">
-              1 Month
-            </Button>
+          <Box display="flex">
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <Box mr="0.5rem">
+                <FormControl>
+                  <InputLabel>Interval</InputLabel>
+                  <Select
+                    value={state.interval}
+                    label="Interval"
+                    onChange={(val) => {
+                      setState({ interval: val.target.value });
+                    }}
+                  >
+                    <MenuItem defaultChecked value={60000}>
+                      1 Minute
+                    </MenuItem>
+                    <MenuItem value={300000}>5 Minutes</MenuItem>
+                    <MenuItem value={600000}>10 Minutes</MenuItem>
+                    <MenuItem value={3600000}>1 Hour</MenuItem>
+                    <MenuItem value={86400000}>1 Day</MenuItem>
+                    <MenuItem value={604800000}>1 Week</MenuItem>
+                    <MenuItem value={2592000000}>1 Month</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
+              <Box mr="0.5rem">
+                <MobileDatePicker
+                  renderInput={(props) => <TextField disabled {...props} />}
+                  label="Date"
+                  inputFormat="DD.MM.YYYY"
+                  value={state.date}
+                  onChange={(newValue) => {
+                    setState({ date: newValue });
+                  }}
+                />
+              </Box>
+              {state.interval < 86400000 && (
+                <TimePicker
+                  label="Time"
+                  value={state.date}
+                  onChange={(newValue) => {
+                    setState({ date: newValue });
+                  }}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              )}
+            </LocalizationProvider>
           </Box>
         </Grid>
         <Grid item xs={12}>
@@ -223,7 +252,7 @@ export const GatewayDetail = () => {
             <LineChart
               width={500}
               height={300}
-              data={data}
+              data={graphTemperature || []}
               margin={{
                 top: 5,
                 right: 30,
@@ -232,25 +261,13 @@ export const GatewayDetail = () => {
               }}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
+              <XAxis dataKey={state.interval < 86400000 ? "time" : "date"} />
               <YAxis />
               <Tooltip />
               <Legend />
-              <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
+              <Line type="monotone" dataKey="temperature" stroke="#82ca9d" />
             </LineChart>
           </ResponsiveContainer>
-        </Grid>
-        <Grid item xs={12}>
-          <h4>Testovaci data - response</h4>
-          <h5>Teplota</h5>
-          <Box>
-            {temperature &&
-              JSON.stringify(temperature.data.temperatures.slice(0, 7))}
-          </Box>
-          <h5>Vlhkost</h5>
-          <Box>
-            {humidity && JSON.stringify(humidity.data.humidities.slice(0, 7))}
-          </Box>
         </Grid>
       </Grid>
     </Layout>
