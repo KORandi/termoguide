@@ -90,14 +90,20 @@ export const fetchGatewayStatus = async (id) => {
   return await fetchJSON(`${url}/api/gateway/status/${id}`);
 };
 
-export const fetchGatewayTemperature = async ({ date, interval }) => {
+export const fetchGatewayTemperature = async ({
+  date,
+  interval,
+  limit = "",
+}) => {
   return await fetchJSON(
-    `${url}/api/gateway/temperature/${date.unix() * 1000}/${interval}`
+    `${url}/api/gateway/temperature/${date.unix() * 1000}/${interval}/${limit}`
   );
 };
 
-export const fetchGatewayHumidity = async (id) => {
-  return await fetchJSON(`${url}/api/gateway/humidity/${id}`);
+export const fetchGatewayHumidity = async ({ date, interval, limit = "" }) => {
+  return await fetchJSON(
+    `${url}/api/gateway/humidity/${date.unix() * 1000}/${interval}/${limit}`
+  );
 };
 
 export const fetchStudentEnum = async () => {
