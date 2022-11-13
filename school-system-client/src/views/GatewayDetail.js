@@ -63,24 +63,24 @@ function timerSetter(interval, step) {
   let roundedMinutes = 0;
   switch (interval) {
     case TIME_IN_MS.MINUTE:
-      return day.subtract(step + 1, "minute");
+      return day.subtract(step - 1, "minute");
     case TIME_IN_MS.FIVE_MINUTES:
-      const d = day.subtract((step + 1) * 5, "minute");
+      const d = day.subtract((step - 1) * 5, "minute");
       roundedMinutes = Math.round(d.get("minute") / 10) * 10;
       return d.set("minute", roundedMinutes);
     case TIME_IN_MS.TEN_MINUTES:
       roundedMinutes = Math.round(day.get("minute") / 10) * 10;
       return day
-        .subtract((step + 1) * 10, "minute")
+        .subtract((step - 1) * 10, "minute")
         .set("minute", roundedMinutes);
     case TIME_IN_MS.HOUR:
-      return day.subtract(step + 1, "hour").set("minute", 0);
+      return day.subtract(step - 1, "hour").set("minute", 0);
     case TIME_IN_MS.DAY:
-      return day.subtract(step + 1, "day");
+      return day.subtract(step - 1, "day");
     case TIME_IN_MS.WEEK:
-      return day.subtract(step + 1, "week");
+      return day.subtract(step - 1, "week");
     case TIME_IN_MS.MONTH:
-      return day.subtract(step + 1, "month");
+      return day.subtract(step - 1, "month");
     default:
       return day;
   }
