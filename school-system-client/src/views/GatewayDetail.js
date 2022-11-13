@@ -55,6 +55,13 @@ function createRow(name, value) {
   return { name, value };
 }
 
+function round(num) {
+  if (typeof num === "undefined") {
+    return;
+  }
+  return Math.round((Number(num) + Number.EPSILON) * 100) / 100;
+}
+
 const STEP = 30;
 const DEFAULT_TIME = TIME_IN_MS.HOUR;
 
@@ -111,7 +118,7 @@ export const GatewayDetail = () => {
 
   const graphTemperature = useMemo(() => {
     return temperature?.data?.data?.map((temp) => ({
-      temperature: temp.temperatureAvg,
+      temperature: round(temp.value),
       datetime: dayjs(temp.date).format("HH:mm:ss DD.MM.YYYY"),
       date: dayjs(temp.date),
     }));
@@ -119,7 +126,7 @@ export const GatewayDetail = () => {
 
   const graphHumidity = useMemo(() => {
     return humidity?.data?.data?.map((hum) => ({
-      humidity: hum.humidityAvg,
+      humidity: round(hum.value),
       datetime: dayjs(hum.date).format("HH:mm:ss DD.MM.YYYY"),
       date: dayjs(hum.date),
     }));
@@ -127,27 +134,39 @@ export const GatewayDetail = () => {
 
   const rows = useMemo(() => {
     return [
-      createRow("Maximum temperature", `${temperature?.data?.max ?? "N/A"}°C`),
-      createRow("Minimum temperature", `${temperature?.data?.min ?? "N/A"}°C`),
+      createRow(
+        "Maximum temperature",
+        `${round(temperature?.data?.max) ?? "N/A"}°C`
+      ),
+      createRow(
+        "Minimum temperature",
+        `${round(temperature?.data?.min) ?? "N/A"}°C`
+      ),
       createRow(
         "Average temperature",
-        `${temperature?.data?.average ?? "N/A"}°C`
+        `${round(temperature?.data?.average) ?? "N/A"}°C`
       ),
       createRow(
         "Temperature variance",
-        `${temperature?.data?.variance ?? "N/A"}°C`
+        `${round(temperature?.data?.variance) ?? "N/A"}°C`
       ),
       createRow(
         "Temperature coeficient of variation",
-        `${temperature?.data?.coefficientOfVariation ?? "N/A"}%`
+        `${round(temperature?.data?.coefficientOfVariation) ?? "N/A"}%`
       ),
-      createRow("Maximum humidity", `${humidity?.data?.max ?? "N/A"}%`),
-      createRow("Minimum humidity", `${humidity?.data?.min ?? "N/A"}%`),
-      createRow("Average humidity", `${humidity?.data?.average ?? "N/A"}%`),
-      createRow("Humidity variance", `${humidity?.data?.variance ?? "N/A"}%`),
+      createRow("Maximum humidity", `${round(humidity?.data?.max) ?? "N/A"}%`),
+      createRow("Minimum humidity", `${round(humidity?.data?.min) ?? "N/A"}%`),
+      createRow(
+        "Average humidity",
+        `${round(humidity?.data?.average) ?? "N/A"}%`
+      ),
+      createRow(
+        "Humidity variance",
+        `${round(humidity?.data?.variance) ?? "N/A"}%`
+      ),
       createRow(
         "Humidity coeficient of variation",
-        `${humidity?.data?.coefficientOfVariation ?? "N/A"}%`
+        `${round(humidity?.data?.coefficientOfVariation) ?? "N/A"}%`
       ),
     ];
   }, [temperature, humidity]);
@@ -322,7 +341,7 @@ export const GatewayDetail = () => {
               <XAxis dataKey="datetime" />
               <YAxis
                 tickFormatter={(tick) => `${tick}%`}
-                domain={["dataMin - 2", "dataMax + 2"]}
+                domain={["dataMin - 0.5", "dataMax + 0.5"]}
               />
               <Tooltip />
               <Line
@@ -359,7 +378,7 @@ export const GatewayDetail = () => {
               <XAxis dataKey="datetime" />
               <YAxis
                 tickFormatter={(tick) => `${tick}°C`}
-                domain={["dataMin - 2", "dataMax + 2"]}
+                domain={["dataMin - 0.5", "dataMax + 0.5"]}
               />
               <Tooltip />
               <Line
