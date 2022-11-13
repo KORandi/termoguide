@@ -86,6 +86,10 @@ export const fetchGateways = async () => {
   return await fetchJSON(`${url}/api/gateway/list`);
 };
 
+export const fetchGateway = async (id) => {
+  return await fetchJSON(`${url}/api/gateway/${id}`);
+};
+
 export const fetchGatewayStatus = async (id) => {
   return await fetchJSON(`${url}/api/gateway/status/${id}`);
 };
@@ -209,6 +213,13 @@ export const createUser = async (body) => {
 
 export const createGateway = async (body) => {
   return await fetchJSON(`${url}/api/gateway/create`, {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+};
+
+export const editGateway = async (body) => {
+  return await fetchJSON(`${url}/api/gateway/update`, {
     method: "POST",
     body: JSON.stringify(body),
   });

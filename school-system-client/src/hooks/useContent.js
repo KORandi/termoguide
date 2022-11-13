@@ -13,12 +13,15 @@ import {
   fetchGatewayStatus,
   fetchGatewayTemperature,
   fetchGatewayHumidity,
+  editGateway,
+  fetchGateway,
 } from "../utils/api";
 import useSWR from "swr";
 
 const contentMap = {
   users: fetchUsers,
   user: fetchUser,
+  gateway: fetchGateway,
   gateways: fetchGateways,
   gatewayStatus: fetchGatewayStatus,
   gatewayTemperature: fetchGatewayTemperature,
@@ -33,6 +36,7 @@ const deleteContentMap = {
 const editContentMap = {
   user: updateUser,
   userPassword: updateUserPassword,
+  gateway: editGateway,
 };
 
 const addContentMap = {

@@ -99,6 +99,7 @@ export const GatewayDetail = () => {
   const { id } = useParams();
   const { data: temperature } = useContent("gatewayTemperature", state);
   const { data: humidity } = useContent("gatewayHumidity", state);
+  const { data: gatewayMeta } = useContent("gateway", id);
 
   const remove = useDeleteContent("gateway", id);
   const navigate = useNavigate();
@@ -132,16 +133,29 @@ export const GatewayDetail = () => {
         "Average temperature",
         `${temperature?.data?.average ?? "N/A"}°C`
       ),
+      createRow(
+        "Temperature variance",
+        `${temperature?.data?.variance ?? "N/A"}°C`
+      ),
+      createRow(
+        "Temperature coeficient of variation",
+        `${temperature?.data?.coefficientOfVariation ?? "N/A"}%`
+      ),
       createRow("Maximum humidity", `${humidity?.data?.max ?? "N/A"}%`),
       createRow("Minimum humidity", `${humidity?.data?.min ?? "N/A"}%`),
       createRow("Average humidity", `${humidity?.data?.average ?? "N/A"}%`),
+      createRow("Humidity variance", `${humidity?.data?.variance ?? "N/A"}%`),
+      createRow(
+        "Humidity coeficient of variation",
+        `${humidity?.data?.coefficientOfVariation ?? "N/A"}%`
+      ),
     ];
   }, [temperature, humidity]);
 
   return (
     <Layout active="gateways">
       <ControlPanel
-        title={"Gateway Detail"}
+        title={gatewayMeta?.data?.name ?? "Gateway detail"}
         id={id}
         page={"gateway"}
         rolesDelete={[ADMIN]}
