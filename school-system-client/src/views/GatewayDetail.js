@@ -172,7 +172,10 @@ export const GatewayDetail = () => {
   }, [temperature, humidity]);
 
   return (
-    <Layout active="gateways">
+    <Layout
+      isLoading={!temperature || !humidity || !gatewayMeta}
+      active="gateways"
+    >
       <ControlPanel
         title={gatewayMeta?.data?.name ?? "Gateway detail"}
         id={id}
