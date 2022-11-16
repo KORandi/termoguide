@@ -233,7 +233,6 @@ export const GatewayDetail = () => {
                     });
                   }}
                 >
-                  <MenuItem value={5}>5 records</MenuItem>
                   <MenuItem value={10}>10 records</MenuItem>
                   <MenuItem value={20}>20 records</MenuItem>
                   <MenuItem value={30}>30 records</MenuItem>
