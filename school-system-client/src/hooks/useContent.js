@@ -44,15 +44,15 @@ const addContentMap = {
   gateway: createGateway,
 };
 
-export const useContent = (contentName, id) => {
+export const useContent = (contentName, key, body) => {
   const { setError } = useApp();
-  const { data, error } = useSWR([contentName, id], (contentName, id) =>
-    contentMap[contentName]?.(id)
+  const { data, error } = useSWR([contentName, key], () =>
+    contentMap[contentName]?.(body || key)
   );
 
   useEffect(() => {
     if (error) {
-      setError(error?.message || "Failed to download data");
+      setError(error?.message || "Failed to fetch data");
     }
   }, [error, setError]);
 

@@ -66,28 +66,26 @@ const STEP = 30;
 const DEFAULT_TIME = TIME_IN_MS.HOUR;
 
 function timerSetter(interval, step) {
-  const day = dayjs();
+  const day = dayjs().set("second", 0).set("millisecond", 0);
   let roundedMinutes = 0;
   switch (interval) {
     case TIME_IN_MS.MINUTE:
-      return day.subtract(step - 1, "minute");
+      return day.subtract(step, "minute");
     case TIME_IN_MS.FIVE_MINUTES:
-      const d = day.subtract((step - 1) * 5, "minute");
+      const d = day.subtract(step * 5, "minute");
       roundedMinutes = Math.round(d.get("minute") / 10) * 10;
       return d.set("minute", roundedMinutes);
     case TIME_IN_MS.TEN_MINUTES:
       roundedMinutes = Math.round(day.get("minute") / 10) * 10;
-      return day
-        .subtract((step - 1) * 10, "minute")
-        .set("minute", roundedMinutes);
+      return day.subtract(step * 10, "minute").set("minute", roundedMinutes);
     case TIME_IN_MS.HOUR:
-      return day.subtract(step - 1, "hour").set("minute", 0);
+      return day.subtract(step, "hour").set("minute", 0);
     case TIME_IN_MS.DAY:
-      return day.subtract(step - 1, "day");
+      return day.subtract(step, "day").set("minute", 0).set("hour", 0);
     case TIME_IN_MS.WEEK:
-      return day.subtract(step - 1, "week");
+      return day.subtract(step, "week").set("minute", 0).set("hour", 0);
     case TIME_IN_MS.MONTH:
-      return day.subtract(step - 1, "month");
+      return day.subtract(step, "month").set("minute", 0).set("hour", 0);
     default:
       return day;
   }
@@ -104,8 +102,16 @@ export const GatewayDetail = () => {
     }
   );
   const { id } = useParams();
-  const { data: temperature } = useContent("gatewayTemperature", state);
-  const { data: humidity } = useContent("gatewayHumidity", state);
+  const { data: temperature } = useContent(
+    "gatewayTemperature",
+    { ...state, date: state.date.unix() },
+    state
+  );
+  const { data: humidity } = useContent(
+    "gatewayHumidity",
+    { ...state, date: state.date.unix() },
+    state
+  );
   const { data: gatewayMeta } = useContent("gateway", id);
 
   const remove = useDeleteContent("gateway", id);
