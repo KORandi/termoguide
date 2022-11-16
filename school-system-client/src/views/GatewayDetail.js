@@ -333,74 +333,80 @@ export const GatewayDetail = () => {
           <h3 style={{ textAlign: "center" }}>Humidity</h3>
         </Grid>
         <Grid item xs={12} height={500}>
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart
-              width={500}
-              height={300}
-              data={graphHumidity || []}
-              margin={{
-                top: 5,
-                right: 30,
-                left: 20,
-                bottom: 5,
-              }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="datetime" />
-              <YAxis
-                tickFormatter={(tick) => `${tick}%`}
-                domain={["dataMin - 0.5", "dataMax + 0.5"]}
-              />
-              <Tooltip />
-              <Line
-                activeDot={{
-                  onClick: (e, { payload: { date } }) => {
-                    setState({ date, displayDatetime: true });
-                  },
-                  r: 8,
+          {!graphHumidity?.length && <span>Data are not available</span>}
+          {graphHumidity?.length && (
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart
+                width={500}
+                height={300}
+                data={graphHumidity || []}
+                margin={{
+                  top: 5,
+                  right: 30,
+                  left: 20,
+                  bottom: 5,
                 }}
-                type="monotone"
-                dataKey="humidity"
-                stroke="#8884d8"
-              />
-            </LineChart>
-          </ResponsiveContainer>
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="datetime" />
+                <YAxis
+                  tickFormatter={(tick) => `${tick}%`}
+                  domain={["dataMin - 0.5", "dataMax + 0.5"]}
+                />
+                <Tooltip />
+                <Line
+                  activeDot={{
+                    onClick: (e, { payload: { date } }) => {
+                      setState({ date, displayDatetime: true });
+                    },
+                    r: 8,
+                  }}
+                  type="monotone"
+                  dataKey="humidity"
+                  stroke="#8884d8"
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          )}
         </Grid>
         <Grid mb="1rem" mt="2rem" item xs={12}>
           <h3 style={{ textAlign: "center" }}>Temperature</h3>
         </Grid>
         <Grid item xs={12} height={500}>
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart
-              width={500}
-              height={300}
-              data={graphTemperature || []}
-              margin={{
-                top: 5,
-                right: 30,
-                left: 20,
-                bottom: 5,
-              }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="datetime" />
-              <YAxis
-                tickFormatter={(tick) => `${tick}°C`}
-                domain={["dataMin - 0.5", "dataMax + 0.5"]}
-              />
-              <Tooltip />
-              <Line
-                activeDot={{
-                  onClick: (e, { payload: { date } }) => {
-                    setState({ date, displayDatetime: true });
-                  },
+          {!graphTemperature?.length && <span>Data are not available</span>}
+          {graphTemperature?.length && (
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart
+                width={500}
+                height={300}
+                data={graphTemperature || []}
+                margin={{
+                  top: 5,
+                  right: 30,
+                  left: 20,
+                  bottom: 5,
                 }}
-                type="monotone"
-                dataKey="temperature"
-                stroke="#82ca9d"
-              />
-            </LineChart>
-          </ResponsiveContainer>
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="datetime" />
+                <YAxis
+                  tickFormatter={(tick) => `${tick}°C`}
+                  domain={["dataMin - 0.5", "dataMax + 0.5"]}
+                />
+                <Tooltip />
+                <Line
+                  activeDot={{
+                    onClick: (e, { payload: { date } }) => {
+                      setState({ date, displayDatetime: true });
+                    },
+                  }}
+                  type="monotone"
+                  dataKey="temperature"
+                  stroke="#82ca9d"
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          )}
         </Grid>
       </Grid>
     </Layout>
