@@ -65,8 +65,9 @@ function round(num) {
 const STEP = 30;
 const DEFAULT_TIME = TIME_IN_MS.HOUR;
 
-function timerSetter(interval, step) {
+function timerSetter(interval, initialStep) {
   const day = dayjs().set("second", 0).set("millisecond", 0);
+  const step = initialStep - 1;
   let roundedMinutes = 0;
   switch (interval) {
     case TIME_IN_MS.MINUTE:
