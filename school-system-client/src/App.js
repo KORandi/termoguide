@@ -16,7 +16,6 @@ import { GatewayAdd } from "./views/GatewayAdd";
 import { GatewayEdit } from "./views/GatewayEdit";
 import { useApp } from "./contexts/appContext";
 import { Alert, AlertTitle, Slide, Snackbar } from "@mui/material";
-import dayjs from "dayjs";
 
 function App() {
   const [hasAccess, setAccess] = useState(null);

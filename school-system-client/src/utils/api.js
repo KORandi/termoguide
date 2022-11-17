@@ -97,16 +97,46 @@ export const fetchGatewayStatus = async (id) => {
 export const fetchGatewayTemperature = async ({
   date,
   interval,
-  limit = "",
+  limit,
+  displayDatetime,
 }) => {
+  const params = new URLSearchParams(
+    Object.entries({
+      date: displayDatetime && date.unix() * 1000,
+      interval,
+      limit,
+    }).reduce((acc, [key, value]) => {
+      if (value) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {})
+  );
   return await fetchJSON(
-    `${url}/api/gateway/temperature/${date.unix() * 1000}/${interval}/${limit}`
+    `${url}/api/gateway/temperature/search?${params.toString()}`
   );
 };
 
-export const fetchGatewayHumidity = async ({ date, interval, limit = "" }) => {
+export const fetchGatewayHumidity = async ({
+  date,
+  interval,
+  limit,
+  displayDatetime,
+}) => {
+  const params = new URLSearchParams(
+    Object.entries({
+      date: displayDatetime && date.unix() * 1000,
+      interval,
+      limit,
+    }).reduce((acc, [key, value]) => {
+      if (value) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {})
+  );
   return await fetchJSON(
-    `${url}/api/gateway/humidity/${date.unix() * 1000}/${interval}/${limit}`
+    `${url}/api/gateway/humidity/search?${params.toString()}`
   );
 };
 
