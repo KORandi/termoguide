@@ -126,18 +126,22 @@ export const GatewayDetail = () => {
   const graphTemperature = useMemo(() => {
     return temperature?.data?.data?.map((temp) => ({
       temperature: round(temp.value),
-      datetime: dayjs(temp.date).format("HH:mm:ss DD.MM.YYYY"),
+      datetime: dayjs(temp.date).format(
+        state.interval < TIME_IN_MS.DAY ? "HH:mm:ss" : "DD.MM.YYYY"
+      ),
       date: dayjs(temp.date),
     }));
-  }, [temperature]);
+  }, [state.interval, temperature?.data?.data]);
 
   const graphHumidity = useMemo(() => {
     return humidity?.data?.data?.map((hum) => ({
       humidity: round(hum.value),
-      datetime: dayjs(hum.date).format("HH:mm:ss DD.MM.YYYY"),
+      datetime: dayjs(hum.date).format(
+        state.interval < TIME_IN_MS.DAY ? "HH:mm:ss" : "DD.MM.YYYY"
+      ),
       date: dayjs(hum.date),
     }));
-  }, [humidity]);
+  }, [humidity?.data?.data, state.interval]);
 
   const rows = useMemo(() => {
     return [
