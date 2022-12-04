@@ -143,8 +143,27 @@ export const GatewayDetail = () => {
     }));
   }, [humidity?.data?.data, state.interval]);
 
-  const rows = useMemo(() => {
+  const humidityRows = useMemo(() => {
     return [
+      createRow("Maximum humidity", `${round(humidity?.data?.max) ?? "N/A"}%`),
+      createRow("Minimum humidity", `${round(humidity?.data?.min) ?? "N/A"}%`),
+      createRow(
+        "Average humidity",
+        `${round(humidity?.data?.average) ?? "N/A"}%`
+      ),
+      createRow(
+        "Humidity variance",
+        `${round(humidity?.data?.variance) ?? "N/A"}%`
+      ),
+      createRow(
+        "Humidity coeficient of variation",
+        `${round(humidity?.data?.coefficientOfVariation) ?? "N/A"}%`
+      ),
+    ];
+  }, [humidity]);
+
+  const temperatureRows = useMemo(
+    () => [
       createRow(
         "Maximum temperature",
         `${round(temperature?.data?.max) ?? "N/A"}°C`
@@ -165,22 +184,9 @@ export const GatewayDetail = () => {
         "Temperature coeficient of variation",
         `${round(temperature?.data?.coefficientOfVariation) ?? "N/A"}%`
       ),
-      createRow("Maximum humidity", `${round(humidity?.data?.max) ?? "N/A"}%`),
-      createRow("Minimum humidity", `${round(humidity?.data?.min) ?? "N/A"}%`),
-      createRow(
-        "Average humidity",
-        `${round(humidity?.data?.average) ?? "N/A"}%`
-      ),
-      createRow(
-        "Humidity variance",
-        `${round(humidity?.data?.variance) ?? "N/A"}%`
-      ),
-      createRow(
-        "Humidity coeficient of variation",
-        `${round(humidity?.data?.coefficientOfVariation) ?? "N/A"}%`
-      ),
-    ];
-  }, [temperature, humidity]);
+    ],
+    [temperature]
+  );
 
   return (
     <Layout
@@ -310,31 +316,6 @@ export const GatewayDetail = () => {
             </LocalizationProvider>
           )}
         </Grid>
-        <Grid my={"2rem"} item xs={12}>
-          <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Name</TableCell>
-                  <TableCell align="right">Value</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows.map((row) => (
-                  <TableRow
-                    key={row.name}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {row.name}
-                    </TableCell>
-                    <TableCell align="right">{row.value}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Grid>
         <Grid mb="1rem" item xs={12}>
           <h3 style={{ textAlign: "center" }}>Humidity</h3>
         </Grid>
@@ -375,6 +356,31 @@ export const GatewayDetail = () => {
             </ResponsiveContainer>
           )}
         </Grid>
+        <Grid my={"2rem"} item xs={12}>
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Name</TableCell>
+                  <TableCell align="right">Value</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {humidityRows.map((row) => (
+                  <TableRow
+                    key={row.name}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="row">
+                      {row.name}
+                    </TableCell>
+                    <TableCell align="right">{row.value}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Grid>
         <Grid mb="1rem" mt="2rem" item xs={12}>
           <h3 style={{ textAlign: "center" }}>Temperature</h3>
         </Grid>
@@ -413,6 +419,31 @@ export const GatewayDetail = () => {
               </LineChart>
             </ResponsiveContainer>
           )}
+        </Grid>
+        <Grid my={"2rem"} item xs={12}>
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Name</TableCell>
+                  <TableCell align="right">Value</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {temperatureRows.map((row) => (
+                  <TableRow
+                    key={row.name}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="row">
+                      {row.name}
+                    </TableCell>
+                    <TableCell align="right">{row.value}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </Grid>
       </Grid>
     </Layout>
