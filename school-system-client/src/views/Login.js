@@ -36,17 +36,6 @@ export const Login = () => {
     [navigate, userContext]
   );
 
-  const errorHandler = useCallback((error) => {
-    /**
-     * Error -> when user is not logged at google at all
-     */
-    if (error?.error === "idpiframe_initialization_failed") {
-      return;
-    }
-    setErrorMessage(error.message);
-    setIsLoaded(true);
-  }, []);
-
   const formHandler = useCallback(
     async ({ email, password }) => {
       try {

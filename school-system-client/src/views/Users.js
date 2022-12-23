@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Table } from "../components/table";
 import { userColumns } from "../config/columns/users";
 import { Layout } from "../containers/Layout";

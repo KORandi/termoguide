@@ -1,5 +1,5 @@
 import { Grid } from "@mui/material";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ControlPanel } from "../components/control-panel/ControlPanel";
 import { Layout } from "../containers/Layout";

@@ -93,6 +93,7 @@ function timerSetter(interval, initialStep) {
 }
 
 export const GatewayDetail = () => {
+  const { id } = useParams();
   const [state, setState] = useReducer(
     (prevState, currState) => ({ ...prevState, ...currState }),
     {
@@ -100,9 +101,9 @@ export const GatewayDetail = () => {
       interval: DEFAULT_TIME,
       limit: STEP,
       displayDatetime: false,
+      gatewayId: id,
     }
   );
-  const { id } = useParams();
   const { data: temperature } = useContent(
     "gatewayTemperature",
     { ...state, date: state.date.unix() },

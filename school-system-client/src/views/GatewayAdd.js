@@ -1,5 +1,5 @@
 import { Button, Grid } from "@mui/material";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Layout } from "../containers/Layout";
 import { withRole } from "../containers/withRole";
 import { useForm } from "react-hook-form";

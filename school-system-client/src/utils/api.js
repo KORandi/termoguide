@@ -99,12 +99,14 @@ export const fetchGatewayTemperature = async ({
   interval,
   limit,
   displayDatetime,
+  gatewayId,
 }) => {
   const params = new URLSearchParams(
     Object.entries({
       date: displayDatetime && date.unix() * 1000,
       interval,
       limit,
+      gatewayId,
     }).reduce((acc, [key, value]) => {
       if (value) {
         acc[key] = value;
@@ -122,12 +124,14 @@ export const fetchGatewayHumidity = async ({
   interval,
   limit,
   displayDatetime,
+  gatewayId,
 }) => {
   const params = new URLSearchParams(
     Object.entries({
       date: displayDatetime && date.unix() * 1000,
       interval,
       limit,
+      gatewayId,
     }).reduce((acc, [key, value]) => {
       if (value) {
         acc[key] = value;
