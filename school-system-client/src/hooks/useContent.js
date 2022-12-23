@@ -72,7 +72,7 @@ export const useDeleteContent = (contentName, id) => {
         throw new Error();
       }
       await deleteContentMap[contentName]?.({ id });
-      setSuccess(`Record has been deleted`);
+      setSuccess(`Record  has been deleted`);
       return true;
     } catch (error) {
       setError(error?.message || "Unable to remove a record");
