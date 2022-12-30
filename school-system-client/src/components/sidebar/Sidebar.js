@@ -8,12 +8,11 @@ import { Typography } from "@mui/material";
 export const Sidebar = (props) => {
   const { active } = props;
   const user = useUser();
-  const navigate = useNavigate();
 
   const handleSignOut = useCallback(() => {
     user.logout();
-    navigate("/app/login");
-  }, [user, navigate]);
+    window.location.href = "/app/login";
+  }, [user]);
 
   return (
     <div className="sidebar-menu">

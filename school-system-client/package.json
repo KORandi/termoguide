@@ -33,11 +33,7 @@
     "start": "set PORT=3001&&react-scripts start",
     "build": "react-scripts build",
     "build:prod": "npm run build && rm -r ../school-system-server/public && cp -a ./build/. ../school-system-server/public",
-    "git:push": "git commit -m edit -a && git push && cd ../school-system-server && git commit -m edit -a && git push",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "hello": "echo hello",
-    "publish": "git add ./ && git commit -m publish && git push && npm run build && rm -r ../school-system-server/public/ && mkdir ../school-system-server/public && mv -f ./build/* ../school-system-server/public/ && cd ../school-system-server && git add ./ && git commit -m publish && git push && git push prod"
+    "git:push": "git commit -m edit -a && git push && cd ../school-system-server && git commit -m edit -a && git push"
   },
   "eslintConfig": {
     "extends": [

@@ -93,7 +93,7 @@ function timerSetter(interval, initialStep) {
   }
 }
 
-export const GatewayDetail = withRole(["ADMIN", "OWNER"], () => {
+export const GatewayDetail = () => {
   const { id } = useParams();
   const [state, setState] = useReducer(
     (prevState, currState) => ({ ...prevState, ...currState }),
@@ -105,12 +105,12 @@ export const GatewayDetail = withRole(["ADMIN", "OWNER"], () => {
       gatewayId: id,
     }
   );
-  const { data: temperature } = useContent(
+  const { data: temperature, error: temperatureError } = useContent(
     "gatewayTemperature",
     { ...state, date: state.date.unix() },
     state
   );
-  const { data: humidity } = useContent(
+  const { data: humidity, error: humidityError } = useContent(
     "gatewayHumidity",
     { ...state, date: state.date.unix() },
     state
@@ -126,6 +126,9 @@ export const GatewayDetail = withRole(["ADMIN", "OWNER"], () => {
   }, [navigate, remove]);
 
   const graphTemperature = useMemo(() => {
+    if (temperatureError) {
+      return [];
+    }
     return temperature?.data?.data?.map((temp) => ({
       temperature: round(temp.value),
       datetime: dayjs(temp.date).format(
@@ -133,9 +136,12 @@ export const GatewayDetail = withRole(["ADMIN", "OWNER"], () => {
       ),
       date: dayjs(temp.date),
     }));
-  }, [state.interval, temperature?.data?.data]);
+  }, [state.interval, temperature?.data?.data, temperatureError]);
 
   const graphHumidity = useMemo(() => {
+    if (humidityError) {
+      return [];
+    }
     return humidity?.data?.data?.map((hum) => ({
       humidity: round(hum.value),
       datetime: dayjs(hum.date).format(
@@ -143,9 +149,12 @@ export const GatewayDetail = withRole(["ADMIN", "OWNER"], () => {
       ),
       date: dayjs(hum.date),
     }));
-  }, [humidity?.data?.data, state.interval]);
+  }, [humidity?.data?.data, state.interval, humidityError]);
 
   const humidityRows = useMemo(() => {
+    if (humidityError) {
+      return [];
+    }
     return [
       createRow("Maximum humidity", `${round(humidity?.data?.max) ?? "N/A"}%`),
       createRow("Minimum humidity", `${round(humidity?.data?.min) ?? "N/A"}%`),
@@ -162,10 +171,20 @@ export const GatewayDetail = withRole(["ADMIN", "OWNER"], () => {
         `${round(humidity?.data?.coefficientOfVariation) ?? "N/A"}%`
       ),
     ];
-  }, [humidity]);
+  }, [
+    humidity?.data?.average,
+    humidity?.data?.coefficientOfVariation,
+    humidity?.data?.max,
+    humidity?.data?.min,
+    humidity?.data?.variance,
+    humidityError,
+  ]);
 
-  const temperatureRows = useMemo(
-    () => [
+  const temperatureRows = useMemo(() => {
+    if (temperatureError) {
+      return [];
+    }
+    return [
       createRow(
         "Maximum temperature",
         `${round(temperature?.data?.max) ?? "N/A"}°C`
@@ -186,13 +205,23 @@ export const GatewayDetail = withRole(["ADMIN", "OWNER"], () => {
         "Temperature coeficient of variation",
         `${round(temperature?.data?.coefficientOfVariation) ?? "N/A"}%`
       ),
-    ],
-    [temperature]
-  );
+    ];
+  }, [
+    temperature?.data?.average,
+    temperature?.data?.coefficientOfVariation,
+    temperature?.data?.max,
+    temperature?.data?.min,
+    temperature?.data?.variance,
+    temperatureError,
+  ]);
 
   return (
     <Layout
-      isLoading={!temperature || !humidity || !gatewayMeta}
+      isLoading={
+        (!temperature || !humidity || !gatewayMeta) &&
+        !temperatureError &&
+        !humidityError
+      }
       active="gateways"
     >
       <ControlPanel
@@ -323,7 +352,7 @@ export const GatewayDetail = withRole(["ADMIN", "OWNER"], () => {
         </Grid>
         <Grid item xs={12} height={500}>
           {!graphHumidity?.length && <span>Data are not available</span>}
-          {graphHumidity?.length && (
+          {!!graphHumidity?.length && (
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
                 width={500}
@@ -388,7 +417,7 @@ export const GatewayDetail = withRole(["ADMIN", "OWNER"], () => {
         </Grid>
         <Grid item xs={12} height={500}>
           {!graphTemperature?.length && <span>Data are not available</span>}
-          {graphTemperature?.length && (
+          {!!graphTemperature?.length && (
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
                 width={500}
@@ -450,4 +479,4 @@ export const GatewayDetail = withRole(["ADMIN", "OWNER"], () => {
       </Grid>
     </Layout>
   );
-});
+};
