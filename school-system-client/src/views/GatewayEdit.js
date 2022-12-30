@@ -5,9 +5,10 @@ import { withRole } from "../containers/withRole";
 import { ControlledTextField } from "../components/fields/input/ControlledTextField";
 import { ADMIN } from "../config/roles";
 import { useForm } from "react-hook-form";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useContent, useEditContent } from "../hooks/useContent";
 import { useEffect } from "react";
+import { ControlledAutocomplete } from "../components/fields/input/ControlledAutocomplete";
 
 export const GatewayEdit = withRole([ADMIN], () => {
   const { id } = useParams();
@@ -15,18 +16,37 @@ export const GatewayEdit = withRole([ADMIN], () => {
   const navigate = useNavigate();
   const modify = useEditContent("gateway");
   const { data: gateway } = useContent("gateway", id);
+  const { data: users } = useContent("users");
+
+  const userOptions = useMemo(
+    () =>
+      users?.map(({ id, name, surname }) => ({
+        value: id,
+        name: `${name} ${surname}`,
+      })) || [],
+    [users]
+  );
+
+  const owners = useMemo(() => {
+    const owners = gateway?.data?.owners || [];
+    return userOptions.filter((option) => owners.includes(option.value));
+  }, [gateway?.data?.owners, userOptions]);
 
   const onSubmit = useCallback(
-    async (data) => {
-      await modify({ ...data, id });
+    async ({ owners, ...data }) => {
+      await modify({ ...data, id, owners: owners.map(({ value }) => value) });
       navigate("/app/gateways");
     },
     [id, modify, navigate]
   );
 
   useEffect(() => {
-    reset({ name: gateway?.data?.name, secret: gateway?.data?.secret });
-  }, [gateway, reset]);
+    reset({
+      name: gateway?.data?.name,
+      secret: gateway?.data?.secret,
+      owners: owners,
+    });
+  }, [gateway, owners, reset]);
 
   return (
     <Layout active="gateways">
@@ -56,6 +76,23 @@ export const GatewayEdit = withRole([ADMIN], () => {
               variant="outlined"
               fullWidth
               disabled
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <ControlledAutocomplete
+              name="owners"
+              control={control}
+              label="Owners"
+              variant="outlined"
+              options={userOptions}
+              getOptionLabel={(option) =>
+                option?.name ? `${option.name}` : ""
+              }
+              isOptionEqualToValue={(option, value) =>
+                option.value === value.value
+              }
+              fullWidth
+              multiple
             />
           </Grid>
           <Grid item xs={12}>

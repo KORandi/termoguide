@@ -40,6 +40,7 @@ import { useCallback } from "react";
 import { useContent, useDeleteContent } from "../hooks/useContent";
 import { useReducer } from "react";
 import { useMemo } from "react";
+import { withRole } from "../containers/withRole";
 
 const TIME_IN_MS = {
   MINUTE: 60000,
@@ -92,7 +93,7 @@ function timerSetter(interval, initialStep) {
   }
 }
 
-export const GatewayDetail = () => {
+export const GatewayDetail = withRole(["ADMIN", "OWNER"], () => {
   const { id } = useParams();
   const [state, setState] = useReducer(
     (prevState, currState) => ({ ...prevState, ...currState }),
@@ -449,4 +450,4 @@ export const GatewayDetail = () => {
       </Grid>
     </Layout>
   );
-};
+});

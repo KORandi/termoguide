@@ -11,6 +11,7 @@ export const ControlledAutocomplete = ({
   multiple,
   label,
   rules,
+  isOptionEqualToValue,
 }) => {
   return (
     <Controller
@@ -22,6 +23,7 @@ export const ControlledAutocomplete = ({
             options={options}
             getOptionLabel={getOptionLabel}
             renderOption={renderOption}
+            isOptionEqualToValue={isOptionEqualToValue}
             renderInput={(params) => {
               return (
                 <TextField

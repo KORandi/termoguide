@@ -7,23 +7,19 @@ import { AppProvider } from "./contexts/appContext";
 import { UserProvider } from "./contexts/userContext";
 import { SWRConfig } from "swr";
 
-import { GoogleOAuthProvider } from "@react-oauth/google";
-
 ReactDOM.render(
   <React.StrictMode>
-    <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
-      <UserProvider>
-        <SWRConfig>
-          <AppProvider>
-            <ViewTrapProvider>
-              <BrowserRouter>
-                <App />
-              </BrowserRouter>
-            </ViewTrapProvider>
-          </AppProvider>
-        </SWRConfig>
-      </UserProvider>
-    </GoogleOAuthProvider>
+    <UserProvider>
+      <SWRConfig>
+        <AppProvider>
+          <ViewTrapProvider>
+            <BrowserRouter>
+              <App />
+            </BrowserRouter>
+          </ViewTrapProvider>
+        </AppProvider>
+      </SWRConfig>
+    </UserProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );
