@@ -44,6 +44,7 @@ export const GatewayEdit = withRole([ADMIN], () => {
     reset({
       name: gateway?.data?.name,
       secret: gateway?.data?.secret,
+      ip_address: gateway?.data?.ip_address,
       owners: owners,
     });
   }, [gateway, owners, reset]);
