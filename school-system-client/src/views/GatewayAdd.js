@@ -54,8 +54,25 @@ export const GatewayAdd = withRole([ADMIN], () => {
             <ControlledTextField
               name="secret"
               control={control}
-              rules={{ required: "This field is required" }}
-              label="Secret"
+              rules={{
+                pattern: /^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$/,
+                required: "This field is required",
+              }}
+              label="MAC Address"
+              variant="outlined"
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <ControlledTextField
+              name="ip_address"
+              control={control}
+              rules={{
+                required: "This field is required",
+                pattern:
+                  /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$|^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))$/,
+              }}
+              label="IP Address"
               variant="outlined"
               fullWidth
             />

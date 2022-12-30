@@ -29,7 +29,10 @@ export const ControlledTextField = ({
             {...field}
             required={!!rules?.required}
             error={!!fieldState.error}
-            helperText={fieldState.error?.message}
+            helperText={
+              fieldState.error?.message ||
+              (fieldState.error?.type === "pattern" && `Invalid ${label}`)
+            }
             value={field.value || ""}
             {...rest}
           >
