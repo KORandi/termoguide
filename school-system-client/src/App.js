@@ -51,6 +51,7 @@ function App() {
           setWarning("Change your password, in your profile settings.");
         }
       } catch (error) {
+        user.logout();
         setAccess(false);
       }
     })();
