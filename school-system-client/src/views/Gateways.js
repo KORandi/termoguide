@@ -27,7 +27,7 @@ export const Gateways = () => {
             </Link>
           )}
         </Box>
-        <Table columns={subjectColumns} rows={data} />
+        <Table columns={subjectColumns} rows={data || []} />
       </Layout>
     </>
   );

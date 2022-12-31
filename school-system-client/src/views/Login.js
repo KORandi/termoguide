@@ -14,7 +14,7 @@ export const LoginView = () => {
 
   useEffect(() => {
     if (token) {
-      navigate("/app/subjects");
+      navigate("/app/gateways");
     }
   }, [token, navigate]);
 
@@ -31,7 +31,7 @@ export const Login = () => {
   const loginHandler = useCallback(
     ({ token, ...data }) => {
       userContext.login(token, data.user);
-      navigate("/app/subjects");
+      navigate("/app/gateways");
     },
     [navigate, userContext]
   );

@@ -4,9 +4,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ControlPanel } from "../components/control-panel/ControlPanel";
 import { Layout } from "../containers/Layout";
 import { useContent, useDeleteContent } from "../hooks/useContent";
-import { ADMIN } from "../config/roles";
+import { ADMIN, SELF } from "../config/roles";
+import { withRole } from "../containers/withRole";
 
-export const UserDetail = () => {
+export const UserDetail = withRole([ADMIN, SELF], () => {
   const { id } = useParams();
   const { data } = useContent("user", id);
   const remove = useDeleteContent("user", id);
@@ -56,4 +57,4 @@ export const UserDetail = () => {
       </Grid>
     </Layout>
   );
-};
+});

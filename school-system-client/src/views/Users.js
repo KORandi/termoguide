@@ -29,7 +29,7 @@ export const Users = () => {
         )}
       </Box>
 
-      <Table columns={userColumns} rows={data} />
+      <Table columns={userColumns} rows={data || []} />
     </Layout>
   );
 };
