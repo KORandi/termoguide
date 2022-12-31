@@ -16,7 +16,7 @@ export const withRole =
 
     const userRoles = user.getRoles();
     const hasRole = roles.some((role) => userRoles.includes(role));
-    if (!hasRole) {
+    if (!hasRole && roles.length > 0) {
       navigate("/app");
       setError("You don't have access for this page");
       return null;
