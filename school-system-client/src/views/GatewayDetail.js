@@ -40,7 +40,6 @@ import { useCallback } from "react";
 import { useContent, useDeleteContent } from "../hooks/useContent";
 import { useReducer } from "react";
 import { useMemo } from "react";
-import { withRole } from "../containers/withRole";
 
 const TIME_IN_MS = {
   MINUTE: 60000,
@@ -132,7 +131,7 @@ export const GatewayDetail = () => {
     return temperature?.data?.data?.map((temp) => ({
       temperature: round(temp.value),
       datetime: dayjs(temp.date).format(
-        state.interval < TIME_IN_MS.DAY ? "HH:mm:ss" : "DD.MM.YYYY"
+        state.interval < TIME_IN_MS.DAY ? "DD.MM.YYYY HH:mm:ss" : "DD.MM.YYYY"
       ),
       date: dayjs(temp.date),
     }));
@@ -145,7 +144,7 @@ export const GatewayDetail = () => {
     return humidity?.data?.data?.map((hum) => ({
       humidity: round(hum.value),
       datetime: dayjs(hum.date).format(
-        state.interval < TIME_IN_MS.DAY ? "HH:mm:ss" : "DD.MM.YYYY"
+        state.interval < TIME_IN_MS.DAY ? "DD.MM.YYYY HH:mm:ss" : "DD.MM.YYYY"
       ),
       date: dayjs(hum.date),
     }));
