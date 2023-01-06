@@ -89,6 +89,7 @@ const upSamplingSubquery = ({ timestamp, limit, interval, type }) => {
   }
   return [
     ...getPreviousValue({ timestamp, interval, type }),
+    // Create linkedlist
     {
       $set: {
         data: {
@@ -118,6 +119,7 @@ const upSamplingSubquery = ({ timestamp, limit, interval, type }) => {
         },
       },
     },
+    // Do calculations
     {
       $set: {
         data: {
@@ -196,6 +198,7 @@ const upSamplingSubquery = ({ timestamp, limit, interval, type }) => {
         },
       },
     },
+    // Cut data
     {
       $set: {
         data: {
