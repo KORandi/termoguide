@@ -1,9 +1,9 @@
-export const languages = {
-  cs: "Czech",
-  en: "English",
-};
-
-export const degrees = {
-  Bc: "Bachelor",
-  Mgr: "Master",
+export const TIME_IN_MS = {
+  MINUTE: 60000,
+  FIVE_MINUTES: 300000,
+  TEN_MINUTES: 600000,
+  HOUR: 3600000,
+  DAY: 86400000,
+  WEEK: 604800000,
+  MONTH: 2592000000,
 };

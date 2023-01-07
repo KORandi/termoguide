@@ -35,194 +35,43 @@ import {
   MobileDatePicker,
   TimePicker,
 } from "@mui/x-date-pickers";
-import dayjs from "dayjs";
 import { useCallback } from "react";
 import { useContent, useDeleteContent } from "../hooks/useContent";
 import { useReducer } from "react";
-import { useMemo } from "react";
-
-const TIME_IN_MS = {
-  MINUTE: 60000,
-  FIVE_MINUTES: 300000,
-  TEN_MINUTES: 600000,
-  HOUR: 3600000,
-  DAY: 86400000,
-  WEEK: 604800000,
-  MONTH: 2592000000,
-};
-
-function createRow(name, value) {
-  return { name, value };
-}
-
-function round(num) {
-  if (typeof num === "undefined") {
-    return;
-  }
-  return Math.round((Number(num) + Number.EPSILON) * 100) / 100;
-}
-
-const STEP = 30;
-const DEFAULT_TIME = TIME_IN_MS.HOUR;
-
-function timerSetter(interval, initialStep) {
-  const day = dayjs().set("second", 0).set("millisecond", 0);
-  const step = initialStep - 1;
-  let roundedMinutes = 0;
-  switch (interval) {
-    case TIME_IN_MS.MINUTE:
-      return day.subtract(step, "minute");
-    case TIME_IN_MS.FIVE_MINUTES:
-      const d = day.subtract(step * 5, "minute");
-      roundedMinutes = Math.round(d.get("minute") / 10) * 10;
-      return d.set("minute", roundedMinutes);
-    case TIME_IN_MS.TEN_MINUTES:
-      roundedMinutes = Math.round(day.get("minute") / 10) * 10;
-      return day.subtract(step * 10, "minute").set("minute", roundedMinutes);
-    case TIME_IN_MS.HOUR:
-      return day.subtract(step, "hour").set("minute", 0);
-    case TIME_IN_MS.DAY:
-      return day.subtract(step, "day").set("minute", 0).set("hour", 0);
-    case TIME_IN_MS.WEEK:
-      return day.subtract(step, "week").set("minute", 0).set("hour", 0);
-    case TIME_IN_MS.MONTH:
-      return day.subtract(step, "month").set("minute", 0).set("hour", 0);
-    default:
-      return day;
-  }
-}
+import { useGraphData } from "../hooks/useGraphData";
+import { TIME_IN_MS } from "../config/constants";
+import { timerSetter } from "../utils/helpers";
 
 export const GatewayDetail = () => {
   const { id } = useParams();
   const [state, setState] = useReducer(
     (prevState, currState) => ({ ...prevState, ...currState }),
     {
-      date: timerSetter(DEFAULT_TIME, STEP),
-      interval: DEFAULT_TIME,
-      limit: STEP,
+      date: timerSetter(TIME_IN_MS.HOUR, 30),
+      interval: TIME_IN_MS.HOUR,
+      limit: 30,
       displayDatetime: false,
       gatewayId: id,
     }
   );
-  const { data: temperature, error: temperatureError } = useContent(
-    "gatewayTemperature",
-    { ...state, date: state.date.unix() },
-    state
-  );
-  const { data: humidity, error: humidityError } = useContent(
-    "gatewayHumidity",
-    { ...state, date: state.date.unix() },
-    state
-  );
+  const {
+    humidityRows,
+    temperatureRows,
+    graphTemperature,
+    graphHumidity,
+    isLoading,
+  } = useGraphData(state);
   const { data: gatewayMeta } = useContent("gateway", id);
 
   const remove = useDeleteContent("gateway", id);
   const navigate = useNavigate();
-
   const deleteGateway = useCallback(async () => {
     if (!(await remove())) return;
     navigate("/app/gateways");
   }, [navigate, remove]);
 
-  const graphTemperature = useMemo(() => {
-    if (temperatureError) {
-      return [];
-    }
-    return temperature?.data?.data?.map((temp) => ({
-      temperature: round(temp.value),
-      datetime: dayjs(temp.date).format(
-        state.interval < TIME_IN_MS.DAY ? "DD.MM.YYYY HH:mm:ss" : "DD.MM.YYYY"
-      ),
-      date: dayjs(temp.date),
-    }));
-  }, [state.interval, temperature?.data?.data, temperatureError]);
-
-  const graphHumidity = useMemo(() => {
-    if (humidityError) {
-      return [];
-    }
-    return humidity?.data?.data?.map((hum) => ({
-      humidity: round(hum.value),
-      datetime: dayjs(hum.date).format(
-        state.interval < TIME_IN_MS.DAY ? "DD.MM.YYYY HH:mm:ss" : "DD.MM.YYYY"
-      ),
-      date: dayjs(hum.date),
-    }));
-  }, [humidity?.data?.data, state.interval, humidityError]);
-
-  const humidityRows = useMemo(() => {
-    if (humidityError) {
-      return [];
-    }
-    return [
-      createRow("Maximum humidity", `${round(humidity?.data?.max) ?? "N/A"}%`),
-      createRow("Minimum humidity", `${round(humidity?.data?.min) ?? "N/A"}%`),
-      createRow(
-        "Average humidity",
-        `${round(humidity?.data?.average) ?? "N/A"}%`
-      ),
-      createRow(
-        "Humidity variance",
-        `${round(humidity?.data?.variance) ?? "N/A"}%`
-      ),
-      createRow(
-        "Humidity coeficient of variation",
-        `${round(humidity?.data?.coefficientOfVariation) ?? "N/A"}%`
-      ),
-    ];
-  }, [
-    humidity?.data?.average,
-    humidity?.data?.coefficientOfVariation,
-    humidity?.data?.max,
-    humidity?.data?.min,
-    humidity?.data?.variance,
-    humidityError,
-  ]);
-
-  const temperatureRows = useMemo(() => {
-    if (temperatureError) {
-      return [];
-    }
-    return [
-      createRow(
-        "Maximum temperature",
-        `${round(temperature?.data?.max) ?? "N/A"}°C`
-      ),
-      createRow(
-        "Minimum temperature",
-        `${round(temperature?.data?.min) ?? "N/A"}°C`
-      ),
-      createRow(
-        "Average temperature",
-        `${round(temperature?.data?.average) ?? "N/A"}°C`
-      ),
-      createRow(
-        "Temperature variance",
-        `${round(temperature?.data?.variance) ?? "N/A"}°C`
-      ),
-      createRow(
-        "Temperature coeficient of variation",
-        `${round(temperature?.data?.coefficientOfVariation) ?? "N/A"}%`
-      ),
-    ];
-  }, [
-    temperature?.data?.average,
-    temperature?.data?.coefficientOfVariation,
-    temperature?.data?.max,
-    temperature?.data?.min,
-    temperature?.data?.variance,
-    temperatureError,
-  ]);
-
   return (
-    <Layout
-      isLoading={
-        (!temperature || !humidity || !gatewayMeta) &&
-        !temperatureError &&
-        !humidityError
-      }
-      active="gateways"
-    >
+    <Layout isLoading={isLoading} active="gateways">
       <ControlPanel
         title={gatewayMeta?.data?.name ?? "Gateway detail"}
         id={id}
@@ -346,6 +195,70 @@ export const GatewayDetail = () => {
             </LocalizationProvider>
           )}
         </Grid>
+        <Grid mb="1rem" mt="2rem" item xs={12}>
+          <h3 style={{ textAlign: "center" }}>Temperature</h3>
+        </Grid>
+        <Grid item xs={12} height={500}>
+          {!graphTemperature?.length && <span>Data are not available</span>}
+          {!!graphTemperature?.length && (
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart
+                width={500}
+                height={300}
+                data={graphTemperature || []}
+                margin={{
+                  top: 5,
+                  right: 30,
+                  left: 20,
+                  bottom: 5,
+                }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="datetime" />
+                <YAxis
+                  tickFormatter={(tick) => `${tick}°C`}
+                  domain={["dataMin - 0.5", "dataMax + 0.5"]}
+                />
+                <Tooltip />
+                <Line
+                  activeDot={{
+                    onClick: (e, { payload: { date } }) => {
+                      setState({ date, displayDatetime: true });
+                    },
+                  }}
+                  type="monotone"
+                  dataKey="temperature"
+                  stroke="#82ca9d"
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          )}
+        </Grid>
+        <Grid my={"2rem"} item xs={12}>
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Name</TableCell>
+                  <TableCell align="right">Value</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {temperatureRows.map((row) => (
+                  <TableRow
+                    key={row.name}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="row">
+                      {row.name}
+                    </TableCell>
+                    <TableCell align="right">{row.value}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Grid>
         <Grid mb="1rem" item xs={12}>
           <h3 style={{ textAlign: "center" }}>Humidity</h3>
         </Grid>
@@ -397,70 +310,6 @@ export const GatewayDetail = () => {
               </TableHead>
               <TableBody>
                 {humidityRows.map((row) => (
-                  <TableRow
-                    key={row.name}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {row.name}
-                    </TableCell>
-                    <TableCell align="right">{row.value}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Grid>
-        <Grid mb="1rem" mt="2rem" item xs={12}>
-          <h3 style={{ textAlign: "center" }}>Temperature</h3>
-        </Grid>
-        <Grid item xs={12} height={500}>
-          {!graphTemperature?.length && <span>Data are not available</span>}
-          {!!graphTemperature?.length && (
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart
-                width={500}
-                height={300}
-                data={graphTemperature || []}
-                margin={{
-                  top: 5,
-                  right: 30,
-                  left: 20,
-                  bottom: 5,
-                }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="datetime" />
-                <YAxis
-                  tickFormatter={(tick) => `${tick}°C`}
-                  domain={["dataMin - 0.5", "dataMax + 0.5"]}
-                />
-                <Tooltip />
-                <Line
-                  activeDot={{
-                    onClick: (e, { payload: { date } }) => {
-                      setState({ date, displayDatetime: true });
-                    },
-                  }}
-                  type="monotone"
-                  dataKey="temperature"
-                  stroke="#82ca9d"
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          )}
-        </Grid>
-        <Grid my={"2rem"} item xs={12}>
-          <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Name</TableCell>
-                  <TableCell align="right">Value</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {temperatureRows.map((row) => (
                   <TableRow
                     key={row.name}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
