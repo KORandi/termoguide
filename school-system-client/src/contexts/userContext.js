@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from "react";
+import { validateUser } from "../utils/api";
 
 const UserContext = createContext({});
 
@@ -30,6 +31,8 @@ export const UserProvider = ({ children }) => {
     localStorage.clear("token");
   };
 
+  const validate = validateUser;
+
   return (
     <UserContext.Provider
       value={{
@@ -40,6 +43,7 @@ export const UserProvider = ({ children }) => {
         login,
         logout,
         getRoles,
+        validate,
       }}
     >
       {children}

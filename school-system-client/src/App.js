@@ -2,7 +2,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useCallback, useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import "./assets/style.css";
-import { validateUser } from "./utils/api";
 import { WholePageLoader } from "./containers/WholePageLoader";
 import { useUser } from "./contexts/userContext";
 import { LoginView } from "./views/Login";
@@ -44,7 +43,7 @@ function App() {
     }
     (async () => {
       try {
-        const data = await validateUser();
+        const data = await user.validate();
         user.setUser(data.user);
         setAccess(true);
         if (data.user?.resetPassword) {
