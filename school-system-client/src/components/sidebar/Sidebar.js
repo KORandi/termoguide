@@ -2,7 +2,6 @@ import classNames from "classnames";
 import React, { useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useUser } from "../../contexts/userContext";
-import { useNavigate } from "react-router-dom";
 import { Typography } from "@mui/material";
 
 export const Sidebar = (props) => {

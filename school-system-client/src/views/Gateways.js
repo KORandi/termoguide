@@ -3,7 +3,7 @@ import { Box, Button } from "@mui/material";
 import React from "react";
 import { Link } from "react-router-dom";
 import { Table } from "../components/table";
-import { subjectColumns } from "../config/columns/subjects";
+import { gatewayColumns } from "../config/columns/gateways";
 import { Layout } from "../containers/Layout";
 import { useUser } from "../contexts/userContext";
 import { ADMIN } from "../config/roles";
@@ -27,7 +27,7 @@ export const Gateways = () => {
             </Link>
           )}
         </Box>
-        <Table columns={subjectColumns} rows={data || []} />
+        <Table columns={gatewayColumns} rows={data || []} />
       </Layout>
     </>
   );
