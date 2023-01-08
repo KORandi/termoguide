@@ -8,20 +8,26 @@ import { Layout } from "../containers/Layout";
 import { useUser } from "../contexts/userContext";
 import { ADMIN } from "../config/roles";
 import { useContent } from "../hooks/useContent";
+import { useStyles } from "../hooks/useStyles";
 
 export const Gateways = () => {
   const user = useUser();
   const userRoles = user.getRoles();
   const { data } = useContent("gateways");
+  const { viewHeading } = useStyles();
 
   return (
     <>
       <Layout isLoading={!data} active="gateways">
-        <h2 className="view-heading">Gateways</h2>
+        <h2 className={viewHeading}>Gateways</h2>
         <Box mt={3}>
           {userRoles.includes(ADMIN) && (
             <Link to="/app/gateway/add">
-              <Button variant="outlined" startIcon={<Add fontSize="small" />}>
+              <Button
+                color={"info"}
+                variant="contained"
+                startIcon={<Add fontSize="small" />}
+              >
                 Add gateway
               </Button>
             </Link>

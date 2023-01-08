@@ -1,7 +1,5 @@
-import "bootstrap/dist/css/bootstrap.min.css";
 import { useCallback, useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
-import "./assets/style.css";
 import { WholePageLoader } from "./containers/WholePageLoader";
 import { useUser } from "./contexts/userContext";
 import { LoginView } from "./views/Login";
@@ -15,6 +13,7 @@ import { GatewayAdd } from "./views/GatewayAdd";
 import { GatewayEdit } from "./views/GatewayEdit";
 import { useApp } from "./contexts/appContext";
 import { Alert, AlertTitle, Slide, Snackbar } from "@mui/material";
+import { useStyles } from "./hooks/useStyles";
 
 function App() {
   const [hasAccess, setAccess] = useState(null);
@@ -57,8 +56,10 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
+  const className = useStyles();
+
   return (
-    <div className="App">
+    <div className={className.body}>
       {hasAccess === null && <WholePageLoader />}
       {hasAccess !== null && (
         <>

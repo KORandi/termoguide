@@ -1,10 +1,11 @@
+import { Grid } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { Button } from "../components/fields/button";
-import { Input } from "../components/fields/input";
+import { ControlledTextField } from "../components/fields/input/ControlledTextField";
 import { WholePageLoader } from "../containers/WholePageLoader";
 import { useUser } from "../contexts/userContext";
+import { useLoginStyles } from "../hooks/useLoginStyles";
 import { login } from "../utils/api";
 
 export const LoginView = () => {
@@ -50,6 +51,8 @@ export const Login = () => {
     [loginHandler]
   );
 
+  const className = useLoginStyles();
+
   return (
     <>
       {!isLoaded && (
@@ -60,41 +63,31 @@ export const Login = () => {
         </div>
       )}
       <form
-        className="login-container-wrapper"
+        className={className.containerWrapper}
         onSubmit={handleSubmit(formHandler)}
       >
-        <div className="login-container">
-          <div className="title">TermoGuide</div>
-          <Controller
-            control={control}
-            name="email"
-            render={({ field: { onChange, value } }) => (
-              <Input.FluidInput
+        <div className={className.container}>
+          <Grid width="80%" display="flex" direction="column" gap="1rem">
+            <Grid className={className.title} xs={12} item>
+              TermoGuide
+            </Grid>
+            <Grid xs={12} item>
+              <ControlledTextField
+                control={control}
+                name="email"
                 type="email"
-                label="email"
-                id="email"
-                value={value}
-                onChange={(event) => {
-                  onChange(event?.target?.value);
-                }}
+                label="E-mail"
               />
-            )}
-          />
-          <Controller
-            control={control}
-            name="password"
-            render={({ field: { onChange, value } }) => (
-              <Input.FluidInput
+            </Grid>
+            <Grid xs={12} item>
+              <ControlledTextField
+                control={control}
+                name="password"
                 type="password"
-                label="password"
-                id="password"
-                value={value}
-                onChange={(event) => {
-                  onChange(event?.target?.value);
-                }}
+                label="Password"
               />
-            )}
-          />
+            </Grid>
+          </Grid>
           <div>
             {errorMessage && (
               <div style={{ marginTop: "15px" }}>
@@ -102,15 +95,9 @@ export const Login = () => {
               </div>
             )}
           </div>
-          <Button
-            style={{
-              margin: "15px 0",
-            }}
-            className="login-button"
-            type="submit"
-          >
+          <button className={className.button} type="submit">
             log in
-          </Button>
+          </button>
         </div>
       </form>
     </>

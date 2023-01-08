@@ -3,6 +3,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { Link } from "react-router-dom";
 import { useUser } from "../../contexts/userContext";
+import { useStyles } from "../../hooks/useStyles";
 
 export const ControlPanel = ({
   title,
@@ -14,11 +15,12 @@ export const ControlPanel = ({
 }) => {
   const user = useUser();
   const userRoles = user.getRoles();
+  const { viewHeading } = useStyles();
 
   return (
     <Grid container alignItems={"center"} spacing={"0.25rem"}>
       <Grid item>
-        <h2 className="view-heading">{title}</h2>
+        <h2 className={viewHeading}>{title}</h2>
       </Grid>
       <Grid item>
         <Grid container py={"1rem"} spacing="0.25rem">

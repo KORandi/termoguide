@@ -2,7 +2,8 @@ import classNames from "classnames";
 import React, { useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useUser } from "../../contexts/userContext";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
+import { useStyles } from "../../hooks/useStyles";
 
 export const Sidebar = (props) => {
   const { active } = props;
@@ -13,15 +14,17 @@ export const Sidebar = (props) => {
     window.location.href = "/app/login";
   }, [user]);
 
+  const className = useStyles();
+
   return (
-    <div className="sidebar-menu">
+    <div className={className.sidebarMenu}>
       <UserProfileView />
-      <div className="menu-items">
+      <div className={className.menuItems}>
         <Link
           to="/app/gateways"
           className={classNames({
-            "active-item": active === "gateways",
-            "inactive-item": active !== "gateways",
+            [className.activeItem]: active === "gateways",
+            [className.inactiveItem]: active !== "gateways",
           })}
         >
           Gateways
@@ -29,18 +32,22 @@ export const Sidebar = (props) => {
         <Link
           to="/app/users"
           className={classNames({
-            "active-item": active === "users",
-            "inactive-item": active !== "users",
+            [className.activeItem]: active === "users",
+            [className.inactiveItem]: active !== "users",
           })}
         >
           Users
         </Link>
       </div>
-      <div>
-        <button onClick={handleSignOut} id="sign-out-btn" className="full-btn">
+      <Box px="0.5rem">
+        <button
+          onClick={handleSignOut}
+          id="sign-out-btn"
+          className={className.signout}
+        >
           Sign Out
         </button>
-      </div>
+      </Box>
     </div>
   );
 };
@@ -53,16 +60,18 @@ const UserProfileView = () => {
     [user]
   );
 
+  const className = useStyles();
+
   return (
-    <div className="user-profile">
+    <div>
       <Link to={`/app/user/edit/${user.getUser()?.id}`}>
         <img
           src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQ2wn18dnC8OmX7Qx49epjgoHREUBHEviB10griBGemOmkYQoK5g"
-          id="profile-pic"
+          className={className.profilePic}
           alt="profile pic"
         />
       </Link>
-      <h3 id="display-name">{fullName}</h3>
+      <h3 className={className.displayName}>{fullName}</h3>
       <Typography variant="subtitle2">{roles.join(", ")}</Typography>
     </div>
   );

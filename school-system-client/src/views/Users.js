@@ -8,21 +8,26 @@ import { Add } from "@mui/icons-material";
 import { useUser } from "../contexts/userContext";
 import { useContent } from "../hooks/useContent";
 import { ADMIN } from "../config/roles";
+import { useStyles } from "../hooks/useStyles";
 
 export const Users = () => {
   const user = useUser();
   const userRoles = user.getRoles();
-
   const { data } = useContent("users");
+  const { viewHeading } = useStyles();
 
   return (
     <Layout isLoading={!data} active="users">
-      <h2 className="view-heading">Users</h2>
+      <h2 className={viewHeading}>Users</h2>
 
       <Box mt={3}>
         {userRoles.includes(ADMIN) && (
           <Link to="/app/user/add">
-            <Button variant="outlined" startIcon={<Add fontSize="small" />}>
+            <Button
+              color={"info"}
+              variant="contained"
+              startIcon={<Add fontSize="small" />}
+            >
               Add user
             </Button>
           </Link>
